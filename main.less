@@ -1,0 +1,127 @@
+/**************************
+***************************
+@HEADER  
+***************************
+**************************/
+
+/* used on banner images and carousels*/
+@keyframes scale {
+  from{
+    transform:scale(1.15,1.15);
+    -webkit-transform:scale(1.15,1.15);
+    -moz-transform:scale(1.15,1.15);
+    -o-transform:scale(1.15,1.15);
+  }
+  to{
+    transform:scale(1,1); 
+    -webkit-transform:scale(1,1); 
+    -moz-transform:scale(1,1); 
+    -o-transform:scale(1,1); 
+  }
+}
+
+.banner-thumbnail-wrapper{
+  overflow:hidden;
+  figure{
+    transform:scale(1.15,1.15);
+    -webkit-transform:scale(1.15,1.15);
+    -moz-transform:scale(1.15,1.15);
+    -o-transform:scale(1.15,1.15);
+  }
+  &.is-visible{
+    figure{
+      animation: scale 4s ease-in-out forwards !important;
+    }
+  }
+}
+.promoted-gallery-wrapper{
+  overflow:hidden;
+  img{
+    transform:scale(1.15,1.15);
+    -webkit-transform:scale(1.15,1.15);
+    -moz-transform:scale(1.15,1.15);
+    -o-transform:scale(1.15,1.15);
+  }
+  &.is-visible{
+    img{
+        animation: scale 4s ease-in-out forwards !important;
+        animation-delay:0.3s;
+    }
+  }
+}
+
+/**************************
+***************************
+@MAIN CONTENT
+***************************
+**************************/
+
+/** used on sqs-blocks */
+@keyframes fadeUp {
+  from{
+     opacity:0;
+     transform:translateY(10px);
+  }
+  to{
+     opacity:1;
+     transform:translateY(0px);
+  }
+}
+@keyframes fadeSwivel {
+  from{
+    opacity:0;
+    transform:rotateY(90deg);
+  }
+  to{
+      opacity:1;
+      transform:rotateY(0deg);
+  }
+}
+@keyframes slideRight {
+  from{
+    opacity:0;
+    transform:scale(0.9);
+  }
+  to{
+    opacity:1;
+    transform:scale(1);
+  }
+}
+
+/* show elements when in edit mode */
+.sqs-edit-mode-active{
+  .will-be-visible{
+    opacity:1 !important;
+  }
+  .sqs-block{
+    opacity:1 !important;
+    transform:rotateY(0deg) !important;
+  }
+  .sqs-col-4, .sqs-col-6{
+    opacity:1 !important;
+  }
+}
+
+/* add animations when is-visible class is triggered */
+#page{
+  max-width:1080px;
+  margin:0 auto;
+  .sqs-block{
+    opacity:0;
+    &.is-visible{
+      animation:fadeUp 0.4s ease-in-out forwards;
+    }
+  }
+  .sqs-col-4{
+    opacity:0;
+    &.is-visible{
+      animation:slideRight 0.4s ease-in-out forwards;
+    }    
+  }
+  .sqs-col-6{
+    opacity:0;
+    &.is-visible{
+      animation:slideRight 0.4s ease-in-out forwards;
+    }    
+  }
+}
