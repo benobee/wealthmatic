@@ -1,23 +1,26 @@
 {
-  "name": "webpack-build",
+  "name": "sqs-build",
   "version": "1.0.0",
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha",
     "start": "webpack --progress --colors --watch",
     "watch": "./node_modules/.bin/webpack -d --watch --colors",
-    "build": "webpack -p"
+    "lint": "eslint ./imports/modules/"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "autoprefixer-loader": "^3.2.0",
     "babel-core": "^6.14.0",
+    "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.14.0",
     "css-loader": "^0.26.1",
     "es6-promise": "^3.3.1",
+    "eslint": "^3.14.1",
+    "eslint-loader": "^1.6.1",
     "exports-loader": "^0.6.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "imports-loader": "^0.7.0",
@@ -25,6 +28,7 @@
     "json-loader": "^0.5.4",
     "less": "^2.7.1",
     "less-loader": "^2.2.3",
+    "mocha": "^3.2.0",
     "style-loader": "^0.13.1",
     "webpack": "^1.13.2",
     "webpack-dev-server": "^1.15.1"

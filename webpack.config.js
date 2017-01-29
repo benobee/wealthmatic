@@ -1,10 +1,10 @@
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const PROD = JSON.parse(process.env.PROD_ENV || '1');
+const PROD = JSON.parse(process.env.PROD_ENV || '0');
 
 const config = {
 	context: __dirname,
-	entry: PROD ? ['./main.js', './main.less'] : ['./main.js', './main.less'],
+	entry: ['./main.js', './main.less'],
 	devtool: PROD ? '' : 'eval',
 	output: {
 		publicPath: '/',
@@ -22,28 +22,49 @@ const config = {
 	    }
 	},
 	module: {
+		preLoaders: [
+            // ESLint
+            {
+                test: /source\/js\/.*\.js$/,
+                exclude: /node_modules/,
+                loader: "eslint-loader"
+            }
+        ],
   		loaders: [
-    		{ test: /\.js$/, exclude: /node_modules/, loader: 'babel-loader' },
-    		{ test: /\.jsx$/, exclude: /node_modules/, loader: 'babel-loader', query: { presets: ['es2015', 'react'] }},
-
+    		{ 
+    			test: /\.js$/, 
+    			exclude: /node_modules/, 
+    			loader: 'babel-loader',
+    			query: { presets: 
+    				['es2015'] 
+    			} 
+    		},
+    		{ 
+    			test: /\.jsx$/, 
+    			exclude: /node_modules/, 
+    			loader: 'babel-loader', 
+    			query: { presets: 
+    				['es2015', 'react'] 
+    			}
+    		},
 			{ 
 	            test: /(isotope|masonry|outlayer|item|get-size|fizzy-ui-utils\/utils)\.js$/, 
 	            loader: 'imports?define=>false' 
         	},
-        	
-    		PROD ? {
+    		{
     			test: /\.less$/, 
     			exclude: /node_modules/, 
     			loader: ExtractTextPlugin.extract("style-loader", "css-loader!less-loader!autoprefixer-loader") 
-
-    		} : { 
-    			
-    			test: /\.less$/, 
-    			exclude: /node_modules/, 
-    			loader: "style!css!autoprefixer!less"
     		},
-    		{ test: /\.css$/, exclude: /node_modules/, loader: "style!css!autoprefixer!less" },
-    		{ test: /\.json$/, loader: "json-loader"} 		
+    		{ 
+    			test: /\.css$/, 
+    			exclude: /node_modules/, 
+    			loader: "style!css!autoprefixer!less" 
+    		},
+    		{ 
+    			test: /\.json$/, 
+    			loader: "json-loader"
+    		} 		
   		]
 	},
 	plugins: [
@@ -59,9 +80,9 @@ const config = {
 	    output: {
     		comments: false
   		},
-  		minimize: false,
+  		minimize: true,
   		debug: true,
-  		sourceMap: true
+  		sourceMap: false
 	  }),
 	  new ExtractTextPlugin("./bundle.min.css"),
 	  new webpack.ProvidePlugin({
