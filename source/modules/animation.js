@@ -3,41 +3,44 @@
  * @public
  * @namespace animation
  * @description checks visible initialized elements on screen and animates
+ * 
  *
  */
 
 import $ from 'jquery';
 
-  const animation = {
-
+const animation = {
     init() {
-      this.targetElements(); /* define target elements*/
-      this.events(); /* bind scroll event handlers */
+      $(window).on("load", () => {
+        this.targetElements(); /* define target elements*/
+        this.events(); /* bind scroll event handlers */        
+      });
+    },
 
+    increment(num, value) {
+      num += value;
+      return num;
     },
     
     timeline(array, offset) {
-      
+
       /* method to define an offset value for 
       staggered animations. Injects into data
       attribute from defined arrays */
 
       /* increment value by offset variable */
-      let n = 0;
-
-      function increment(value) {
-          n += value;
-          return n;
-      }     
-           
+      const num = 0;
+          
       /* iterate through array and apply offset 
       to data attribue of each element */  
       $.each(array, (i, item) => {
 
-        offset = increment(offset);
-        offset = offset * 0.30;
+        offset = this.increment(num, offset);
+        offset += 0.15;
 
-        $(item).attr('data-offset-value', offset).css('animation-delay', offset + 's');
+        $(item).attr('data-offset-value', offset).css({
+          'animation-delay': offset + 's'
+        });
 
       });
 
@@ -61,13 +64,30 @@ import $ from 'jquery';
       $.each(this.targetElements, (i, item) => {
         
           /* add class to target animation */ 
-          $(item).addClass('will-be-visible');       
+          $(item).addClass('will-be-visible');  
       });
       
       /*defining staggered animation elemenets */
+      const blocks = $('.sqs-row');
       
-      this.timeline($('.sqs-col-4'), 1);
-      this.timeline($('.sqs-col-6'), 1.5);
+      $.each(blocks, (i, item) => {
+        const six = $(item).find('.sqs-col-6').toArray();
+
+        const four = $(item).find('.sqs-col-4').toArray();
+        
+        this.addTimeline(six);
+        this.addTimeline(four);
+
+      });
+
+    },
+
+    addTimeline(array) {
+
+      if (array.length > 0) {
+        this.timeline(array, 0);
+      }
+
     },
 
     visible(item) {
@@ -79,7 +99,7 @@ import $ from 'jquery';
 
       const height = $(window).height() * 0.9;
       
-      if(distance < height) {
+      if (distance < height) {
 
           /* add visible class */
           $(item).addClass('is-visible');          
@@ -99,9 +119,7 @@ import $ from 'jquery';
       is-initialized class and apply animate class
       when in viewport */
 
-      $(window).on('scroll', (e) => {
-        const top = $('body').scrollTop();
-        
+      $(window).on('scroll', () => {        
         $.each(this.targetElements, (i, item) => {
           this.visible(item); /* add visible class */         
         });

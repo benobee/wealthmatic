@@ -7,7 +7,8 @@
     "test": "mocha",
     "start": "webpack --progress --colors --watch",
     "watch": "./node_modules/.bin/webpack -d --watch --colors",
-    "lint": "eslint ./imports/modules/"
+    "lint": "eslint source",
+    "build": "webpack"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +22,7 @@
     "es6-promise": "^3.3.1",
     "eslint": "^3.14.1",
     "eslint-loader": "^1.6.1",
+    "eslint-watch": "^2.1.14",
     "exports-loader": "^0.6.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "imports-loader": "^0.7.0",

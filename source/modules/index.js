@@ -10,4 +10,4 @@ import animation from "./animation.js";
 
 export {
 	animation
-}
+};

@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const PROD = JSON.parse(process.env.PROD_ENV || '0');
+const PROD = JSON.parse(process.env.PROD_ENV || '1');
 
 const config = {
 	context: __dirname,
@@ -25,7 +25,7 @@ const config = {
 		preLoaders: [
             // ESLint
             {
-                test: /source\/js\/.*\.js$/,
+                test: /.js$/,
                 exclude: /node_modules/,
                 loader: "eslint-loader"
             }

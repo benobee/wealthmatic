@@ -6,18 +6,18 @@
  *
  */
 
-import * as core from './imports/modules/index.js';
+import * as core from './source/modules/index.js';
 
 /* compile all less files from ./stylesheets */
-const css = require("./main.less");
+// const css = require("./main.less");
 
 class App_Build {
-    constructor() {
-    	core.animation.init();
-    }
-};
+	constructor() {
+		core.animation.init();
+	}
+}
 
 const App = new App_Build();
 
-
+window._App = App;
 
