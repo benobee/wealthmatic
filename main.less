@@ -63,11 +63,10 @@
 
 
 
-/**************************************
- **
- **           @MAIN CONTENT
- **
- **************************************
+/*
+ *
+ * @MAIN CONTENT
+ *
 */
 
 /** used on sqs-blocks */
@@ -127,7 +126,7 @@
 */
 
 .sqs-edit-mode-active{
-  .will-be-visible{
+  .is-initialized{
     opacity:1 !important;
   }
   .sqs-block{
@@ -151,7 +150,6 @@
   .sqs-col-4, .sqs-col-6{
      opacity:0;
      &.is-visible{
-       opacity:1 !important;
        animation:slideRight 0.4s ease-in-out forwards;
        -webkit-animation:slideRight 0.4s ease-in-out forwards;
      } 

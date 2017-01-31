@@ -49,6 +49,7 @@ const modal = {
 		 * which displays info in separate popup window
 		 * 
 		*/
+	
 		const list = $('.hentry');
 
 		$(list).on("click", (e) => {

@@ -6,6 +6,7 @@
  */
 
 import $ from 'jquery';
+// import visible from 'visible-element';
 
 const animation = {
 
@@ -16,19 +17,31 @@ const animation = {
        * 
       */
      
+      this.heightMap = [];
+     
       if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
 
         this.firefox();
 
       } else {
         this.targetElements();
-        this.events();     
+        this.mapTargetElements();
+        this.setStaggeredAnimations();
+        this.events(); 
       }
+
+      console.log(this.heightMap);
       
     },
 
     firefox() {
-        const array = $('.banner-thumbnail-wrapper, .promoted-gallery-wrapper, .sqs-block, .sqs-col-4, .sqs-col-6');
+
+        /*
+         * @desc temp fix for live firefox issue
+         * 
+        */
+       
+        const array = $('.banner-thumbnail-wrapper, .promoted-gallery-wrapper, .sqs-block, .sqs-col-4, .sqs-col-6').toArray();
 
         $.each(array, (i, item) => {
           $(item).addClass("is-visible");
@@ -65,7 +78,45 @@ const animation = {
 
     },
 
-    distanceFromTop: function(el) {
+    mapTargetElements() {
+
+       /*
+       * @desc map out each target element and get
+       * the distance from the height of the document
+       * and store in a mapped array
+       * 
+      */
+          
+      $.each(this.targetElements, (i, item) => {
+        const distance = this.distanceDocumentTop(item);
+
+        item.distanceFromTop = distance;
+
+        this.heightMap.push(item);
+      });
+    },
+
+    distanceDocumentTop(element) {
+
+        /*
+         * @desc get the distance from the top
+         * of the document
+         * 
+        */
+       
+        const distance = $(element).offset();
+
+        return distance.top;
+    },
+
+    distanceWindowTop(el) {
+
+      /*
+       * @desc get the distance from the top
+       * of the current window
+       * 
+      */
+     
       const top = Math.floor( $(el).offset().top - $('body').scrollTop() );
 
       return top;
@@ -82,35 +133,38 @@ const animation = {
       this.targetElements = $('.banner-thumbnail-wrapper, .promoted-gallery-wrapper, .sqs-block, .sqs-col-4, .sqs-col-6');
       
       $.each(this.targetElements, (i, item) => {
-          $(item).addClass('will-be-visible');
+          $(item).addClass('is-initialized');
       });
-      
-      const blocks = $('.sqs-row');
-      
-      $.each(blocks, (i, item) => {
-        const six = $(item).find('.sqs-col-6').toArray();
-
-        const four = $(item).find('.sqs-col-4').toArray();
-        
-        this.staggerAnimation(six);
-        this.staggerAnimation(four);
-
-      });
+    
 
     },
 
-    staggerAnimation(array) {
+    setStaggeredAnimations() {
 
       /*
-       * @desc if array exists run through each element
-       * to add staggered animation
+       * @desc find elements within rows and stagger certain
+       * responsive columns with animation delay
        * 
       */
      
-      if (array.length > 0) {
-        this.timeline(array, 0);
-      }
+      const blocks = $('.sqs-row');
+      
+      $.each(blocks, (i, item) => {
+        //find col-6 elements
+        const six = $(item).find('.sqs-col-6').toArray();
 
+        if (six.length > 0) {
+          this.timeline(six, 0);
+        }
+
+        //find col-4 elements
+        const four = $(item).find('.sqs-col-4').toArray();
+
+        if (four.length > 0) {
+          this.timeline(four, 0);
+        }
+
+      });
     },
 
     visible(item) {
@@ -121,7 +175,7 @@ const animation = {
        * 
       */
      
-      const distance = Math.floor( this.distanceFromTop(item) );
+      const distance = Math.floor( this.distanceWindowTop(item) );
 
       let height = Math.floor( $(window).height() );
 
@@ -130,7 +184,11 @@ const animation = {
       if (distance < height) {
           /* add visible class */
           $(item).addClass('is-visible');
-      }    
+      }
+    },
+
+    round5(x) {
+      return Math.ceil( x / 5 ) * 5;
     },
 
     events() {
@@ -150,8 +208,23 @@ const animation = {
       when in viewport */
 
       $(window).on('scroll', () => {
-        $.each(this.targetElements, (i, item) => {
-          this.visible(item); /* add visible class */         
+        $.each(this.heightMap, (i, item) => {
+
+          // let height = $('body').scrollTop();
+
+          // height += window.innerHeight / 2;
+          // const itemHeight = item.distanceFromTop;
+
+          // if (height === itemHeight) {
+          //   console.log(item);         
+          // }
+
+          const visible = $(item).hasClass('is-visible');
+
+          if (visible === false) {
+            this.visible(item); /* add visible class */               
+          }
+      
         });
       });       
     }
