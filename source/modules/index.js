@@ -7,7 +7,9 @@
  */
 
 import animation from "./animation.js";
+import modal from "./modal.js";
 
 export {
-	animation
+	animation,
+	modal
 };

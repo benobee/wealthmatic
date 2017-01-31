@@ -5,7 +5,7 @@ const PROD = JSON.parse(process.env.PROD_ENV || '1');
 const config = {
 	context: __dirname,
 	entry: ['./main.js', './main.less'],
-	devtool: PROD ? '' : 'eval',
+	devtool: PROD ? '' : '',
 	output: {
 		publicPath: '/',
 		path: __dirname + "/template/assets",

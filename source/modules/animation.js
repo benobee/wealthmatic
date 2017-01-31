@@ -1,20 +1,38 @@
 /**
  *
- * @public
- * @namespace animation
  * @description checks visible initialized elements on screen and animates
- * 
+ * exports to index.js which is exported to main.js
  *
  */
 
 import $ from 'jquery';
 
 const animation = {
+
     init() {
-      $(window).on("load", () => {
-        this.targetElements(); /* define target elements*/
-        this.events(); /* bind scroll event handlers */        
-      });
+      
+      /*
+       * @desc initialize all variables and event handlers 
+       * 
+      */
+     
+      if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+
+        this.firefox();
+
+      } else {
+        this.targetElements();
+        this.events();     
+      }
+      
+    },
+
+    firefox() {
+        const array = $('.banner-thumbnail-wrapper, .promoted-gallery-wrapper, .sqs-block, .sqs-col-4, .sqs-col-6');
+
+        $.each(array, (i, item) => {
+          $(item).addClass("is-visible");
+        });
     },
 
     increment(num, value) {
@@ -24,15 +42,16 @@ const animation = {
     
     timeline(array, offset) {
 
-      /* method to define an offset value for 
-      staggered animations. Injects into data
-      attribute from defined arrays */
-
-      /* increment value by offset variable */
-      const num = 0;
+      /*
+       * @desc method to define an offset value for 
+       * staggered animations. Injects into data
+       * attribute from defined arrays
+       * 
+      */
+      
+      const num = 0; //increment value by offset variable
           
-      /* iterate through array and apply offset 
-      to data attribue of each element */  
+      //iterate through array and apply offset to data attribue of each element
       $.each(array, (i, item) => {
 
         offset = this.increment(num, offset);
@@ -46,28 +65,26 @@ const animation = {
 
     },
 
-    distanceFromTop(el) {
+    distanceFromTop: function(el) {
+      const top = Math.floor( $(el).offset().top - $('body').scrollTop() );
 
-      /* get the distance from the target 
-         elements to the top of the viewport */
-
-      return $(el).offset().top - $('body').scrollTop();
+      return top;
     },
     
     targetElements() {
 
-      /* define and identify target elements to add class 
-      for triggering CSS animations*/
+      /*
+       * @desc define and identify target elements to add class 
+       * for triggering CSS animations
+       * 
+      */
       
       this.targetElements = $('.banner-thumbnail-wrapper, .promoted-gallery-wrapper, .sqs-block, .sqs-col-4, .sqs-col-6');
       
       $.each(this.targetElements, (i, item) => {
-        
-          /* add class to target animation */ 
-          $(item).addClass('will-be-visible');  
+          $(item).addClass('will-be-visible');
       });
       
-      /*defining staggered animation elemenets */
       const blocks = $('.sqs-row');
       
       $.each(blocks, (i, item) => {
@@ -75,15 +92,21 @@ const animation = {
 
         const four = $(item).find('.sqs-col-4').toArray();
         
-        this.addTimeline(six);
-        this.addTimeline(four);
+        this.staggerAnimation(six);
+        this.staggerAnimation(four);
 
       });
 
     },
 
-    addTimeline(array) {
+    staggerAnimation(array) {
 
+      /*
+       * @desc if array exists run through each element
+       * to add staggered animation
+       * 
+      */
+     
       if (array.length > 0) {
         this.timeline(array, 0);
       }
@@ -92,25 +115,32 @@ const animation = {
 
     visible(item) {
 
-      /* check the distance from an element
-      and add animate class when in viewport */
+      /*
+       * @desc check the distance from an element
+       * and add animate class when in viewport
+       * 
+      */
+     
+      const distance = Math.floor( this.distanceFromTop(item) );
 
-      const distance = this.distanceFromTop(item);
+      let height = Math.floor( $(window).height() );
 
-      const height = $(window).height() * 0.9;
-      
+      height *= 0.9;
+
       if (distance < height) {
-
           /* add visible class */
-          $(item).addClass('is-visible');          
-      }       
+          $(item).addClass('is-visible');
+      }    
     },
 
     events() {
 
-      /* initial class setting for elements already
-      visible on page load */
-
+      /*
+       * @desc initial class setting for elements already
+       * visible on page load 
+       * 
+      */
+     
       $.each(this.targetElements, (i, item) => {
          this.visible(item);
       });
@@ -119,7 +149,7 @@ const animation = {
       is-initialized class and apply animate class
       when in viewport */
 
-      $(window).on('scroll', () => {        
+      $(window).on('scroll', () => {
         $.each(this.targetElements, (i, item) => {
           this.visible(item); /* add visible class */         
         });
