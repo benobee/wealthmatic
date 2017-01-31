@@ -51,8 +51,8 @@
 
         // Best Practices
         "complexity": [
-            1,
-            2
+            0,
+            0
         ],
         "consistent-return": 2,
         "curly": 2,
@@ -146,7 +146,7 @@
         "no-undef-init": 2,
         "no-undef": 2,
         "no-undefined": 1,
-        "no-unused-vars": 2,
+        "no-unused-vars": 0,
         "no-use-before-define": 0, // Switch to 2 ?
 
 

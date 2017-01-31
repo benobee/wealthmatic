@@ -6,7 +6,9 @@
  */
 
 import $ from 'jquery';
-// import visible from 'visible-element';
+import visibleElement from 'visible-element';
+
+const visible = visibleElement();
 
 const animation = {
 
@@ -17,40 +19,81 @@ const animation = {
        * 
       */
      
-      this.heightMap = [];
-     
+      this.targetElements();
+      this.setStaggeredAnimations();
+
       if (navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
 
-        this.firefox();
+        this.firefoxEvents();
 
       } else {
-        this.targetElements();
-        this.mapTargetElements();
-        this.setStaggeredAnimations();
+
         this.events(); 
       }
 
-      console.log(this.heightMap);
-      
     },
 
-    firefox() {
+    firefoxEvents() {
 
         /*
          * @desc temp fix for live firefox issue
          * 
         */
-       
-        const array = $('.banner-thumbnail-wrapper, .promoted-gallery-wrapper, .sqs-block, .sqs-col-4, .sqs-col-6').toArray();
+        $.each(this.targetElements, (i, item) => {
 
-        $.each(array, (i, item) => {
-          $(item).addClass("is-visible");
+          this.checkVisible(item);
+
+        });
+        
+        /* when scrolling look for elements with
+        is-initialized class and apply animate class
+        when in viewport */
+
+        $(window).on('scroll', () => {
+          $.each(this.targetElements, (i, item) => {
+
+            this.checkVisible(item);
+        
+          });
         });
     },
 
     increment(num, value) {
       num += value;
       return num;
+    },
+
+    itemVisible(item) {
+
+      /*
+       * @desc check the distance from an element
+       * and add animate class when in viewport
+       * 
+      */
+     
+      const distance = Math.floor( this.distanceWindowTop(item) );
+
+      let height = Math.floor( $(window).height() );
+
+      height *= 0.9;
+
+      if (distance < height) {
+          /* add visible class */
+          $(item).addClass('is-visible');
+      }
+    },
+
+    distanceWindowTop(el) {
+
+      /*
+       * @desc get the distance from the top
+       * of the current window
+       * 
+      */
+     
+      const top = Math.floor( $(el).offset().top - $('body').scrollTop() );
+
+      return top;
     },
     
     timeline(array, offset) {
@@ -77,50 +120,6 @@ const animation = {
       });
 
     },
-
-    mapTargetElements() {
-
-       /*
-       * @desc map out each target element and get
-       * the distance from the height of the document
-       * and store in a mapped array
-       * 
-      */
-          
-      $.each(this.targetElements, (i, item) => {
-        const distance = this.distanceDocumentTop(item);
-
-        item.distanceFromTop = distance;
-
-        this.heightMap.push(item);
-      });
-    },
-
-    distanceDocumentTop(element) {
-
-        /*
-         * @desc get the distance from the top
-         * of the document
-         * 
-        */
-       
-        const distance = $(element).offset();
-
-        return distance.top;
-    },
-
-    distanceWindowTop(el) {
-
-      /*
-       * @desc get the distance from the top
-       * of the current window
-       * 
-      */
-     
-      const top = Math.floor( $(el).offset().top - $('body').scrollTop() );
-
-      return top;
-    },
     
     targetElements() {
 
@@ -136,7 +135,6 @@ const animation = {
           $(item).addClass('is-initialized');
       });
     
-
     },
 
     setStaggeredAnimations() {
@@ -167,28 +165,12 @@ const animation = {
       });
     },
 
-    visible(item) {
+    checkVisible(el) {
+        const isVisible = visible.inViewport(el); // → true 
 
-      /*
-       * @desc check the distance from an element
-       * and add animate class when in viewport
-       * 
-      */
-     
-      const distance = Math.floor( this.distanceWindowTop(item) );
-
-      let height = Math.floor( $(window).height() );
-
-      height *= 0.9;
-
-      if (distance < height) {
-          /* add visible class */
-          $(item).addClass('is-visible');
-      }
-    },
-
-    round5(x) {
-      return Math.ceil( x / 5 ) * 5;
+        if (isVisible) {
+           $(el).addClass('is-visible');         
+        }
     },
 
     events() {
@@ -200,7 +182,13 @@ const animation = {
       */
      
       $.each(this.targetElements, (i, item) => {
-         this.visible(item);
+
+          const isVisible = $(item).hasClass('is-visible');
+
+          if (isVisible === false) {
+            this.itemVisible(item); /* add visible class */               
+          }
+
       });
       
       /* when scrolling look for elements with
@@ -208,21 +196,12 @@ const animation = {
       when in viewport */
 
       $(window).on('scroll', () => {
-        $.each(this.heightMap, (i, item) => {
+        $.each(this.targetElements, (i, item) => {
 
-          // let height = $('body').scrollTop();
+          const isVisible = $(item).hasClass('is-visible');
 
-          // height += window.innerHeight / 2;
-          // const itemHeight = item.distanceFromTop;
-
-          // if (height === itemHeight) {
-          //   console.log(item);         
-          // }
-
-          const visible = $(item).hasClass('is-visible');
-
-          if (visible === false) {
-            this.visible(item); /* add visible class */               
+          if (isVisible === false) {
+            this.itemVisible(item); /* add visible class */               
           }
       
         });
